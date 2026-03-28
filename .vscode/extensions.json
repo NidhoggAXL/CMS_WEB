@@ -1,0 +1,9 @@
+{
+  "recommendations": [ 
+    // VS Code 推荐扩展列表配置// 这些扩展可以提供更好的Vue开发体验、代码规范检查、编辑器配置和代码格式化功能
+    "Vue.volar",
+    "dbaeumer.vscode-eslint",
+    "EditorConfig.EditorConfig",
+    "esbenp.prettier-vscode"
+  ]
+}

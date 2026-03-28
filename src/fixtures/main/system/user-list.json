@@ -1,0 +1,206 @@
+{
+  "code": 0,
+  "data": {
+    "list": [
+      {
+        "id": 177034333,
+        "name": "nigh_egg",
+        "realname": "李银河",
+        "cellphone": 15914711281,
+        "enable": 1,
+        "departmentId": 1499,
+        "roleId": 6940,
+        "createAt": "2022-10-17T07:42:27.000Z",
+        "updateAt": "2022-10-17T08:35:27.000Z"
+      },
+      {
+        "id": 177034334,
+        "name": "alice_chen",
+        "realname": "陈小芳",
+        "cellphone": 13823456789,
+        "enable": 1,
+        "departmentId": 1500,
+        "roleId": 6941,
+        "createAt": "2022-10-18T09:15:30.000Z",
+        "updateAt": "2022-10-18T10:20:30.000Z"
+      },
+      {
+        "id": 177034335,
+        "name": "bob_wang",
+        "realname": "王大明",
+        "cellphone": 13934567890,
+        "enable": 0,
+        "departmentId": 1501,
+        "roleId": 6942,
+        "createAt": "2022-10-19T11:30:45.000Z",
+        "updateAt": "2022-10-19T12:35:45.000Z"
+      },
+      {
+        "id": 177034336,
+        "name": "carol_li",
+        "realname": "李美美",
+        "cellphone": 13745678901,
+        "enable": 1,
+        "departmentId": 1502,
+        "roleId": 6943,
+        "createAt": "2022-10-20T14:20:15.000Z",
+        "updateAt": "2022-10-20T15:25:15.000Z"
+      },
+      {
+        "id": 177034337,
+        "name": "david_zhang",
+        "realname": "张伟",
+        "cellphone": 13656789012,
+        "enable": 1,
+        "departmentId": 1503,
+        "roleId": 6944,
+        "createAt": "2022-10-21T16:45:20.000Z",
+        "updateAt": "2022-10-21T17:50:20.000Z"
+      },
+      {
+        "id": 177034338,
+        "name": "emma_liu",
+        "realname": "刘晓晓",
+        "cellphone": 13567890123,
+        "enable": 0,
+        "departmentId": 1504,
+        "roleId": 6945,
+        "createAt": "2022-10-22T09:10:35.000Z",
+        "updateAt": "2022-10-22T10:15:35.000Z"
+      },
+      {
+        "id": 177034339,
+        "name": "frank_wu",
+        "realname": "吴小明",
+        "cellphone": 13478901234,
+        "enable": 1,
+        "departmentId": 1505,
+        "roleId": 6946,
+        "createAt": "2022-10-23T11:25:40.000Z",
+        "updateAt": "2022-10-23T12:30:40.000Z"
+      },
+      {
+        "id": 177034340,
+        "name": "grace_xu",
+        "realname": "徐美丽",
+        "cellphone": 13389012345,
+        "enable": 1,
+        "departmentId": 1506,
+        "roleId": 6947,
+        "createAt": "2022-10-24T13:40:25.000Z",
+        "updateAt": "2022-10-24T14:45:25.000Z"
+      },
+      {
+        "id": 177034341,
+        "name": "henry_ma",
+        "realname": "马大哈",
+        "cellphone": 13290123456,
+        "enable": 0,
+        "departmentId": 1507,
+        "roleId": 6948,
+        "createAt": "2022-10-25T15:55:50.000Z",
+        "updateAt": "2022-10-25T16:00:50.000Z"
+      },
+      {
+        "id": 177034342,
+        "name": "iris_feng",
+        "realname": "冯小兰",
+        "cellphone": 13101234567,
+        "enable": 1,
+        "departmentId": 1508,
+        "roleId": 6949,
+        "createAt": "2022-10-26T18:10:15.000Z",
+        "updateAt": "2022-10-26T19:15:15.000Z"
+      },
+      {
+        "id": 177034343,
+        "name": "jack_zhao",
+        "realname": "赵云飞",
+        "cellphone": 13012345678,
+        "enable": 1,
+        "departmentId": 1509,
+        "roleId": 6950,
+        "createAt": "2022-10-27T08:20:30.000Z",
+        "updateAt": "2022-10-27T09:25:30.000Z"
+      },
+      {
+        "id": 177034344,
+        "name": "kelly_sun",
+        "realname": "孙小雨",
+        "cellphone": 15923456789,
+        "enable": 0,
+        "departmentId": 1510,
+        "roleId": 6951,
+        "createAt": "2022-10-28T10:35:45.000Z",
+        "updateAt": "2022-10-28T11:40:45.000Z"
+      },
+      {
+        "id": 177034345,
+        "name": "leo_zhou",
+        "realname": "周星星",
+        "cellphone": 15834567890,
+        "enable": 1,
+        "departmentId": 1511,
+        "roleId": 6952,
+        "createAt": "2022-10-29T12:50:00.000Z",
+        "updateAt": "2022-10-29T13:55:00.000Z"
+      },
+      {
+        "id": 177034346,
+        "name": "mike_wu",
+        "realname": "吴彦祖",
+        "cellphone": 15745678901,
+        "enable": 1,
+        "departmentId": 1512,
+        "roleId": 6953,
+        "createAt": "2022-10-30T14:15:15.000Z",
+        "updateAt": "2022-10-30T15:20:15.000Z"
+      },
+      {
+        "id": 177034347,
+        "name": "nancy_huang",
+        "realname": "黄小妹",
+        "cellphone": 15656789012,
+        "enable": 0,
+        "departmentId": 1513,
+        "roleId": 6954,
+        "createAt": "2022-10-31T16:30:30.000Z",
+        "updateAt": "2022-10-31T17:35:30.000Z"
+      },
+      {
+        "id": 177034348,
+        "name": "oliver_lin",
+        "realname": "林志颖",
+        "cellphone": 15567890123,
+        "enable": 1,
+        "departmentId": 1514,
+        "roleId": 6955,
+        "createAt": "2022-11-01T09:45:45.000Z",
+        "updateAt": "2022-11-01T10:50:45.000Z"
+      },
+      {
+        "id": 177034349,
+        "name": "penny_deng",
+        "realname": "邓紫棋",
+        "cellphone": 15478901234,
+        "enable": 1,
+        "departmentId": 1515,
+        "roleId": 6956,
+        "createAt": "2022-11-02T11:00:00.000Z",
+        "updateAt": "2022-11-02T12:05:00.000Z"
+      },
+      {
+        "id": 177034350,
+        "name": "quinn_he",
+        "realname": "何炅",
+        "cellphone": 15389012345,
+        "enable": 0,
+        "departmentId": 1516,
+        "roleId": 6957,
+        "createAt": "2022-11-03T13:15:15.000Z",
+        "updateAt": "2022-11-03T14:20:15.000Z"
+      }
+    ],
+    "totalCount": 18
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "code": 0,
+  "data": {
+    "name": "coderwhy",
+    "realname": "coderwhy",
+    "cellphone": 123456789,
+    "enbale": 1,
+    "roles": {
+      "id": 1,
+      "name": "超级管理员",
+      "intro": "所有权限"
+    },
+    "department": {
+      "id": 1,
+      "name": "总裁",
+      "parentId": null,
+      "leader": "coderwhy"
+    }
+  }
+}
