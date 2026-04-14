@@ -34,7 +34,7 @@ const userName = loginStore.userInfo.name
         <div class="user-subinfo">
           <el-avatar
             :size="35"
-            src="https://i.scdn.co/image/ab6765630000ba8adf19aa01ef09db934b6efda7"
+            
           ></el-avatar>
           <div class="user-name text-ellipsis">{{ userName }}</div>
         </div>

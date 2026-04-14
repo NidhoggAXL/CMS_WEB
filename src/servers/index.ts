@@ -12,8 +12,9 @@ const xlRequest = new MYAxios({
   interceptors: {
     requestSucess: (config) => {
       const token = localCache.getItem(TOKEN)
-      if (config.headers && token)//类型缩小
-        config.headers.Authorization = "Bearer" + localCache.getItem(TOKEN)
+      if (config.headers && token)
+        //类型缩小
+        config.headers.Authorization = "Bearer " + localCache.getItem(TOKEN)
       return config
     }
   }

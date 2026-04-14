@@ -15,7 +15,7 @@ defineProps({
 
 //点击路由的切换
 const router = useRouter()
-function handleRouterClick(routerUrl:string) {
+function handleRouterClick(routerUrl: string) {
   router.push(routerUrl)
 }
 
@@ -27,17 +27,16 @@ watch(
   () => route.path,
   (newPath) => {
     const pathMenu = pathToMenu(newPath, loginStore.userMenus)
-    defaultActive.value = pathMenu.id + ''
+    defaultActive.value = pathMenu?.id + "" || ""
   },
   { immediate: true }
 )
-
 </script>
 
 <template>
   <div class="nav-menu">
     <!-- logo -->
-    <div class="logo" >
+    <div class="logo">
       <img src="../../assets//imgs//logo.svg" class="img" />
       <span v-show="!isFold" class="title">后台管理系统</span>
     </div>
@@ -53,17 +52,19 @@ watch(
         unique-opened
       >
         <template v-for="item in loginStore.userMenus" :key="item.id">
-          <el-sub-menu :index="(item.id + '')">
+          <el-sub-menu :index="item.id + ''">
             <template #title>
               <!-- 服务器类似放回 el-icon-location 的字符串 -->
               <el-icon size="20">
                 <component :is="item.icon.split('-icon-')[1]" />
               </el-icon>
-              <span class="title">{{ item.name}}</span>
+              <span class="title">{{ item.name }}</span>
             </template>
 
             <template v-for="subitem in item.children" :key="subitem.id">
-              <el-menu-item :index="(subitem.id + '')" @click="handleRouterClick(subitem.url)">{{ subitem.name }}</el-menu-item>
+              <el-menu-item :index="subitem.id + ''" @click="handleRouterClick(subitem.url)">{{
+                subitem.name
+              }}</el-menu-item>
             </template>
           </el-sub-menu>
         </template>

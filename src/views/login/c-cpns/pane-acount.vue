@@ -48,10 +48,6 @@ function loginActive(isKeep: boolean) {
       // 登录逻辑
       const name = acountFrom.name
       const password = acountFrom.password
-      if (name !== "coderwhy" && name !== "coderdemo") {
-        ElMessage.error("请输入正确的帐号和密码")
-        return
-      }
       //向服务器发送网路请求（携带帐号和密码）
       loginStore.loginAccountAction({ name, password }).then(() => {
         //登录成功后复选框选定记住密码，本地保存账户和密码

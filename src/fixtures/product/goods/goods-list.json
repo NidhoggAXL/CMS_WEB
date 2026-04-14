@@ -1,0 +1,228 @@
+{
+  "code": 0,
+  "data": {
+    "list": [
+      {
+        "id": 1,
+        "name": "iPhone 15 Pro",
+        "category_id": 2,
+        "price": 9999,
+        "stock": 100,
+        "description": "苹果最新款手机，搭载A17 Pro芯片",
+        "image": "https://images.pexels.com/photos/18525574/pexels-photo-18525574.jpeg?auto=compress&cs=tinysrgb&w=800",
+        "create_at": "2024-01-01 00:00:00",
+        "update_at": "2024-01-01 00:00:00"
+      },
+      {
+        "id": 2,
+        "name": "MacBook Pro 14",
+        "category_id": 3,
+        "price": 14999,
+        "stock": 50,
+        "description": "苹果笔记本电脑，搭载M3 Pro芯片",
+        "image": "https://images.pexels.com/photos/18105/pexels-photo.jpg?auto=compress&cs=tinysrgb&w=800",
+        "create_at": "2024-01-01 00:00:00",
+        "update_at": "2024-01-01 00:00:00"
+      },
+      {
+        "id": 3,
+        "name": "小米14",
+        "category_id": 2,
+        "price": 3999,
+        "stock": 200,
+        "description": "小米最新款旗舰手机，搭载骁龙8 Gen 3处理器",
+        "image": "https://images.pexels.com/photos/1334597/pexels-photo-1334597.jpeg?auto=compress&cs=tinysrgb&w=800",
+        "create_at": "2024-01-01 00:00:00",
+        "update_at": "2024-01-01 00:00:00"
+      },
+      {
+        "id": 4,
+        "name": "华为MateBook X Pro",
+        "category_id": 3,
+        "price": 8999,
+        "stock": 80,
+        "description": "华为高端笔记本电脑，搭载麒麟9000处理器",
+        "image": "https://images.pexels.com/photos/7974/pexels-photo.jpg?auto=compress&cs=tinysrgb&w=800",
+        "create_at": "2024-01-01 00:00:00",
+        "update_at": "2024-01-01 00:00:00"
+      },
+      {
+        "id": 5,
+        "name": "海尔冰箱",
+        "category_id": 5,
+        "price": 5999,
+        "stock": 30,
+        "description": "海尔双开门冰箱，大容量变频节能",
+        "image": "https://images.pexels.com/photos/5824883/pexels-photo-5824883.jpeg?auto=compress&cs=tinysrgb&w=800",
+        "create_at": "2024-01-01 00:00:00",
+        "update_at": "2024-01-01 00:00:00"
+      },
+      {
+        "id": 6,
+        "name": "松下洗衣机",
+        "category_id": 6,
+        "price": 3499,
+        "stock": 40,
+        "description": "松下滚筒洗衣机，静音变频",
+        "image": "https://images.pexels.com/photos/5591453/pexels-photo-5591453.jpeg?auto=compress&cs=tinysrgb&w=800",
+        "create_at": "2024-01-01 00:00:00",
+        "update_at": "2024-01-01 00:00:00"
+      },
+      {
+        "id": 7,
+        "name": "iPad Pro 12.9",
+        "category_id": 4,
+        "price": 8999,
+        "stock": 60,
+        "description": "苹果旗舰平板电脑，搭载M2芯片，支持Apple Pencil",
+        "image": "https://images.pexels.com/photos/1334597/pexels-photo-1334597.jpeg?auto=compress&cs=tinysrgb&w=800",
+        "create_at": "2024-01-01 00:00:00",
+        "update_at": "2024-01-01 00:00:00"
+      },
+      {
+        "id": 8,
+        "name": "Samsung Galaxy Tab S9",
+        "category_id": 4,
+        "price": 6999,
+        "stock": 45,
+        "description": "三星旗舰平板，11英寸AMOLED屏幕，支持S Pen",
+        "image": "https://images.pexels.com/photos/1334597/pexels-photo-1334597.jpeg?auto=compress&cs=tinysrgb&w=800",
+        "create_at": "2024-01-01 00:00:00",
+        "update_at": "2024-01-01 00:00:00"
+      },
+      {
+        "id": 9,
+        "name": "Apple Watch Series 9",
+        "category_id": 7,
+        "price": 3199,
+        "stock": 120,
+        "description": "苹果智能手表，新增双指互点手势，更亮屏幕",
+        "image": "https://images.pexels.com/photos/437037/pexels-photo-437037.jpeg?auto=compress&cs=tinysrgb&w=800",
+        "create_at": "2024-01-01 00:00:00",
+        "update_at": "2024-01-01 00:00:00"
+      },
+      {
+        "id": 10,
+        "name": "华为WATCH GT 4",
+        "category_id": 7,
+        "price": 1488,
+        "stock": 150,
+        "description": "华为智能手表，超长续航，科学运动指导",
+        "image": "https://images.pexels.com/photos/437037/pexels-photo-437037.jpeg?auto=compress&cs=tinysrgb&w=800",
+        "create_at": "2024-01-01 00:00:00",
+        "update_at": "2024-01-01 00:00:00"
+      },
+      {
+        "id": 11,
+        "name": "索尼WH-1000XM5",
+        "category_id": 8,
+        "price": 2499,
+        "stock": 90,
+        "description": "索尼旗舰降噪耳机，行业领先的降噪技术",
+        "image": "https://images.pexels.com/photos/1649771/pexels-photo-1649771.jpeg?auto=compress&cs=tinysrgb&w=800",
+        "create_at": "2024-01-01 00:00:00",
+        "update_at": "2024-01-01 00:00:00"
+      },
+      {
+        "id": 12,
+        "name": "AirPods Pro 2",
+        "category_id": 8,
+        "price": 1899,
+        "stock": 200,
+        "description": "苹果真无线降噪耳机，自适应音频，支持精确查找",
+        "image": "https://images.pexels.com/photos/1649771/pexels-photo-1649771.jpeg?auto=compress&cs=tinysrgb&w=800",
+        "create_at": "2024-01-01 00:00:00",
+        "update_at": "2024-01-01 00:00:00"
+      },
+      {
+        "id": 13,
+        "name": "戴森V15吸尘器",
+        "category_id": 9,
+        "price": 5490,
+        "stock": 25,
+        "description": "戴森无绳吸尘器，激光探测灰尘，强劲吸力",
+        "image": "https://images.pexels.com/photos/4108715/pexels-photo-4108715.jpeg?auto=compress&cs=tinysrgb&w=800",
+        "create_at": "2024-01-01 00:00:00",
+        "update_at": "2024-01-01 00:00:00"
+      },
+      {
+        "id": 14,
+        "name": "米家扫拖机器人2",
+        "category_id": 9,
+        "price": 1799,
+        "stock": 80,
+        "description": "小米扫地机器人，激光导航，智能规划路径",
+        "image": "https://images.pexels.com/photos/4108715/pexels-photo-4108715.jpeg?auto=compress&cs=tinysrgb&w=800",
+        "create_at": "2024-01-01 00:00:00",
+        "update_at": "2024-01-01 00:00:00"
+      },
+      {
+        "id": 15,
+        "name": "任天堂Switch OLED",
+        "category_id": 10,
+        "price": 2299,
+        "stock": 60,
+        "description": "任天堂游戏机，7英寸OLED屏幕，增强音效",
+        "image": "https://images.pexels.com/photos/371924/pexels-photo-371924.jpeg?auto=compress&cs=tinysrgb&w=800",
+        "create_at": "2024-01-01 00:00:00",
+        "update_at": "2024-01-01 00:00:00"
+      },
+      {
+        "id": 16,
+        "name": "PS5游戏主机",
+        "category_id": 10,
+        "price": 4299,
+        "stock": 30,
+        "description": "索尼PlayStation 5，超高速SSD，支持4K 120Hz",
+        "image": "https://images.pexels.com/photos/371924/pexels-photo-371924.jpeg?auto=compress&cs=tinysrgb&w=800",
+        "create_at": "2024-01-01 00:00:00",
+        "update_at": "2024-01-01 00:00:00"
+      },
+      {
+        "id": 17,
+        "name": "DJI Mini 4 Pro",
+        "category_id": 11,
+        "price": 4199,
+        "stock": 20,
+        "description": "大疆迷你无人机，全向避障，4K HDR视频",
+        "image": "https://images.pexels.com/photos/336232/pexels-photo-336232.jpeg?auto=compress&cs=tinysrgb&w=800",
+        "create_at": "2024-01-01 00:00:00",
+        "update_at": "2024-01-01 00:00:00"
+      },
+      {
+        "id": 18,
+        "name": "小米平板6 Pro",
+        "category_id": 4,
+        "price": 2499,
+        "stock": 70,
+        "description": "小米旗舰平板，144Hz高刷屏，骁龙8+处理器",
+        "image": "https://images.pexels.com/photos/1334597/pexels-photo-1334597.jpeg?auto=compress&cs=tinysrgb&w=800",
+        "create_at": "2024-01-01 00:00:00",
+        "update_at": "2024-01-01 00:00:00"
+      },
+      {
+        "id": 19,
+        "name": "三星 55英寸 QLED 4K电视",
+        "category_id": 12,
+        "price": 5999,
+        "stock": 15,
+        "description": "三星QLED量子点电视，4K超高清，智能系统",
+        "image": "https://images.pexels.com/photos/1444416/pexels-photo-1444416.jpeg?auto=compress&cs=tinysrgb&w=800",
+        "create_at": "2024-01-01 00:00:00",
+        "update_at": "2024-01-01 00:00:00"
+      },
+      {
+        "id": 20,
+        "name": "美的电饭煲",
+        "category_id": 13,
+        "price": 499,
+        "stock": 100,
+        "description": "美的智能电饭煲，IH电磁加热，24小时预约",
+        "image": "https://images.pexels.com/photos/6995207/pexels-photo-6995207.jpeg?auto=compress&cs=tinysrgb&w=800",
+        "create_at": "2024-01-01 00:00:00",
+        "update_at": "2024-01-01 00:00:00"
+      }
+    ],
+    "totalCount": 20
+  }
+}

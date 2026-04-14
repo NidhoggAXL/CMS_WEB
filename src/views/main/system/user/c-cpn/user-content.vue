@@ -13,6 +13,7 @@ const pageSize = ref(10)
 fetchUserData()
 //获取userList，userTotalCount数据
 const { userList, userTotalCount } = storeToRefs(systemStore)
+// console.log(userList.value, userTotalCount.value)
 
 //暴露方法
 defineExpose({ fetchUserData })
@@ -21,20 +22,21 @@ defineExpose({ fetchUserData })
 const emit = defineEmits(["newUser", "updataUser"])
 
 //分页器逻辑
-function handleSizeChange() {
+function handleSizeChange(size: number) {
+  pageSize.value = size
   fetchUserData()
 }
-function handleCurrentChange() {
+function handleCurrentChange(page: number) {
+  currentPage.value = page
   fetchUserData()
 }
 //封装分页数据请求函数
 function fetchUserData(queryData?: any) {
+  // console.log(queryData)
   const size = pageSize.value
   const page = currentPage.value
   const pageInfo = { size, page }
-  const query = { ...queryData, pageInfo }
-  // systemStore.postUserListAction(query)
-  systemStore.postUserListAction(pageInfo)
+  systemStore.postUserListAction(pageInfo, queryData)
 }
 
 //删除按钮

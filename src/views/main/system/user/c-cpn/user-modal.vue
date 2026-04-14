@@ -12,8 +12,8 @@ const formData = reactive<any>({
   realname: "",
   password: "",
   cellphone: "",
-  roleId: "",
-  departmentId: ""
+  role_id: "",
+  department_id: ""
 })
 
 //确实是否为编辑模式，默认不是
@@ -41,12 +41,12 @@ const handleShowDialog = (isEdit = false, userInfo?: any) => {
 const importStore = useImportantStore()
 importStore.postRolesListAction()
 const { rolesList, departmentsList } = storeToRefs(importStore)
-// console.log(rolesList.value, departmentsList.value)
 
 //确定表单
 const systemSote = useSystemStore()
 const handleConfirmBtnClick = () => {
   if (isUpdata.value && editeData.value) {
+    // console.log(isUpdata.value, editeData.value)
     systemSote.updataUserListAction(formData, editeData.value.id)
   } else {
     importStore.creatUserDataAction(formData)
@@ -75,16 +75,16 @@ defineExpose({ handleShowDialog })
           <el-input v-model="formData.cellphone" placeholder="请输入电话号码" />
         </el-form-item>
 
-        <el-form-item label="选择角色" size="large" prop="roleId">
-          <el-select placeholder="请选择角色" v-model="formData.roleId">
+        <el-form-item label="选择角色" size="large" prop="role_id">
+          <el-select placeholder="请选择角色" v-model="formData.role_id">
             <template v-for="item in rolesList" :key="item.id">
               <el-option :label="item.name" :value="item.id" />
             </template>
           </el-select>
         </el-form-item>
 
-        <el-form-item label="选择部门" size="large" prop="departmentId">
-          <el-select placeholder="请选择部门" v-model="formData.departmentId">
+        <el-form-item label="选择部门" size="large" prop="department_id">
+          <el-select placeholder="请选择部门" v-model="formData.department_id">
             <template v-for="item in departmentsList" :key="item.id">
               <el-option :label="item.name" :value="item.id" />
             </template>

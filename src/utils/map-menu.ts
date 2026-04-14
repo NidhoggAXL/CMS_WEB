@@ -21,27 +21,28 @@ export let firstMenu: any = null
 export function menuToRoutes(userMenus: any[]) {
   //加载本地路由
   const localRoute = loadingRoute()
-
   //根据菜单匹配正确路由
   const routes: RouteRecordRaw[] = []
   for (const menu of userMenus) {
-    for (const submenu of menu.children) {
-      //本地路由对象的url和菜单的path匹配
-      const route = localRoute.find((item) => item.path === submenu.url)
-      if (route) {
-        if (!routes.find(item => item.path === menu.url)) {
-          //顶层菜单添加重定向
-          routes.push({ path: menu.url, redirect: route.path })
+    // 确保菜单有子项才进行处理
+    if (menu.children && Array.isArray(menu.children)) {
+      for (const submenu of menu.children) {
+        //本地路由对象的url和菜单的path匹配
+        const route = localRoute.find((item) => item.path === submenu.url)
+        if (route) {
+          if (!routes.find((item) => item.path === menu.url)) {
+            //顶层菜单添加重定向
+            routes.push({ path: menu.url, redirect: route.path })
+          }
+          //添加匹配路由
+          routes.push(route)
         }
-        //添加匹配路由
-        routes.push(route)
-      }
-      if (!firstMenu && route) {
-        firstMenu = route
+        if (!firstMenu && route) {
+          firstMenu = route
+        }
       }
     }
   }
-
   return routes
 }
 
@@ -66,9 +67,9 @@ export function pathToBreadcrumb(path: string, userMenus: any[]) {
     for (const submenu of menu.children) {
       if (submenu.url === path) {
         //1.顶层菜单
-        crumb.push({name: menu.name, path: menu.url})
+        crumb.push({ name: menu.name, path: menu.url })
         //2.匹配菜单
-        crumb.push({ name: submenu.name, path: submenu.url})
+        crumb.push({ name: submenu.name, path: submenu.url })
       }
     }
   }

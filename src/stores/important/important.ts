@@ -1,39 +1,48 @@
-import { creatUserData, postDepatments, postRolesList } from "@/servers/important/important";
-import { defineStore, storeToRefs } from "pinia";
+import { creatUserData, postDepatments, postRolesList } from "@/servers/important/important"
+import { defineStore, storeToRefs } from "pinia"
+import { ElMessage } from "element-plus"
 
-//自定义数据
-import * as departmentsList from "@/fixtures/important/department/department-list.json"
-import * as rolesList from '@/fixtures/important/role/role-list.json'
-import * as userData from "@/fixtures/main/system/user-list.json"
-
-import { useSystemStore } from "../main/system/system";
+import { useSystemStore } from "../main/system/system"
+import { getRolesListData } from "@/servers/main/roles"
+import { getDepartmentListData } from "@/servers/main/department"
 
 interface IImportant {
   rolesList: any[]
+  rolesListCount: number
   departmentsList: any[]
+  departmentsListCount: number
 }
 
-const useImportantStore = defineStore('important', {
+const useImportantStore = defineStore("important", {
   state: (): IImportant => ({
     rolesList: [],
-    departmentsList: []
+    departmentsList: [],
+    rolesListCount: 0,
+    departmentsListCount: 0
   }),
   actions: {
     //获取角色列表和部门列表
-    postRolesListAction() {
-      // const rolesList = postRolesList()
-      // const departments = postDepatments()
+    async postRolesListAction() {
+      const rolesList = await getRolesListData()
+      const departmentsList = await getDepartmentListData()
+      this.rolesList = rolesList.data.data.list
+      this.rolesListCount = rolesList.data.data.totalCount
+      this.departmentsList = departmentsList.data.data.list
+      this.departmentsListCount = departmentsList.data.data.totalCount
       // 模拟获取到数据
-      this.rolesList = rolesList.data.list
-      this.departmentsList = departmentsList.data.list
     },
     //创建数据
-    creatUserDataAction(userInfo: any) {
-      // const newUser = creatUserData(userInfo)
+    async creatUserDataAction(userInfo: any) {
+      const newUser = await creatUserData(userInfo)
+      if (newUser.status === 200) {
+        ElMessage.success("创建成功")
+      } else {
+        ElMessage.error("创建失败，请稍后重试")
+      }
       // 模拟创建用户
-      userData.data.list.unshift(userInfo)
-      const systemStore = useSystemStore()
-      systemStore.postUserListAction()
+      // userData.data.list.unshift(userInfo)
+      // const systemStore = useSystemStore()
+      // systemStore.postUserListAction()
     }
   }
 })
