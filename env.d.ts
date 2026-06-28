@@ -1,8 +1,10 @@
 /// <reference types="vite/client" />
 
-// 自己声明 .vue 文件的类型
-// declare module '*.vue' {
-//   import { DefineComponent } from 'vue'
-//   const component: DefineComponent
-//   export default component
-// }
+interface ImportMetaEnv {
+  readonly VITE_API_BASE_URL: string
+  readonly VITE_API_TIMEOUT?: string
+}
+
+interface ImportMeta {
+  readonly env: ImportMetaEnv
+}

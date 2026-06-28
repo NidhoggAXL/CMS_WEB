@@ -58,7 +58,7 @@
     </el-card>
 
     <!-- 商品列表 -->
-    <el-card class="goods-card" :body-style="{ padding: '0' }">
+    <el-card class="goods-card" :body-style="{ padding: '0' }" v-loading="listLoading">
       <div class="goods-list">
         <div
           v-for="goods in goodsList"
@@ -83,7 +83,7 @@
             <p class="goods-description">{{ goods.description }}</p>
             <div class="goods-meta">
               <span class="goods-category">{{ getCategoryName(goods.category_id) }}</span>
-              <span class="goods-price">¥{{ goods.price.toLocaleString() }}</span>
+              <span class="goods-price">¥{{ Number(goods.price).toLocaleString() }}</span>
               <span class="goods-stock" :class="{ 'low-stock': goods.stock < 20 }">
                 库存: {{ goods.stock }}
               </span>
@@ -152,6 +152,14 @@
                 :rows="4"
                 placeholder="请输入商品描述"
               />
+              <el-button
+                type="primary"
+                :icon="MagicStick"
+                :loading="aiLoading"
+                @click="handleAIGenerate"
+              >
+                ✨ AI 生成描述
+              </el-button>
             </el-form-item>
           </el-col>
         </el-row>
@@ -168,31 +176,50 @@
 
 <script setup lang="ts" name="goods">
 import { ref, reactive, computed, onMounted } from "vue"
-import { Plus, Search, Refresh, Edit, Delete } from "@element-plus/icons-vue"
+import { Plus } from "@element-plus/icons-vue"
 import { ElMessage, ElMessageBox } from "element-plus"
 import type { FormInstance, FormRules } from "element-plus"
+import { MagicStick } from "@element-plus/icons-vue"
+import { useAI } from "@/components/useAI/useAI"
+import {
+  createGoodsData,
+  deleteGoodsData,
+  getGoodsListData,
+  updateGoodsData
+} from "@/servers/main/goods/index"
+import { getCategoryListData as fetchCategories } from "@/servers/main/category/index"
 
-// 模拟商品数据
-import * as goodsData from "@/fixtures/product/goods/goods-list.json"
-import * as categoryData from "@/fixtures/product/category/category-list.json"
+interface GoodsItem {
+  id: number
+  name: string
+  category_id: number
+  price: number
+  stock: number
+  description: string
+  image: string
+  create_at?: string
+  update_at?: string
+}
 
-// 商品列表数据
-const allGoods = ref(goodsData.data.list)
-const filteredGoods = ref([...allGoods.value])
-const totalCount = ref(goodsData.data.totalCount)
-const categories = ref(categoryData.data.list)
+interface CategoryItem {
+  id: number
+  name: string
+  parent_id: number
+  sort: number
+}
+
+const allGoods = ref<GoodsItem[]>([])
+const totalCount = ref(0)
+const categories = ref<CategoryItem[]>([])
+const listLoading = ref(false)
 
 // 分页数据
 const currentPage = ref(1)
 const pageSize = ref(12)
 const hoveredItem = ref<number | null>(null)
 
-// 计算当前页的商品列表
-const goodsList = computed(() => {
-  const start = (currentPage.value - 1) * pageSize.value
-  const end = start + pageSize.value
-  return filteredGoods.value.slice(start, end)
-})
+// 计算当前页的商品列表（服务端分页，直接使用 allGoods）
+const goodsList = computed(() => allGoods.value)
 
 // 搜索表单
 const searchForm = reactive({
@@ -240,9 +267,35 @@ const formRules: FormRules = {
   image: [{ required: true, message: "请输入商品图片URL", trigger: "blur" }]
 }
 
-// 初始化数据
-onMounted(() => {
-  // 这里可以添加初始化逻辑
+async function loadCategories() {
+  const result = await fetchCategories()
+  categories.value = result.data.data.list
+}
+
+async function loadGoods() {
+  listLoading.value = true
+  try {
+    const offset = (currentPage.value - 1) * pageSize.value
+    const result = await getGoodsListData({
+      offset,
+      size: pageSize.value,
+      name: searchForm.name || undefined,
+      category_id: searchForm.category_id,
+      minPrice: searchForm.minPrice,
+      maxPrice: searchForm.maxPrice
+    })
+    allGoods.value = result.data.data.list
+    totalCount.value = result.data.data.totalCount
+  } catch {
+    ElMessage.error("加载商品列表失败")
+  } finally {
+    listLoading.value = false
+  }
+}
+
+onMounted(async () => {
+  await loadCategories()
+  await loadGoods()
 })
 
 // 获取分类名称
@@ -252,56 +305,38 @@ const getCategoryName = (categoryId: number) => {
 }
 
 // 重置搜索
-const resetSearch = () => {
+const resetSearch = async () => {
   Object.assign(searchForm, {
     name: "",
     category_id: undefined,
     minPrice: undefined,
     maxPrice: undefined
   })
-  // 重置搜索结果
-  filteredGoods.value = [...allGoods.value]
-  totalCount.value = allGoods.value.length
-  currentPage.value = 1 // 重置到第一页
+  currentPage.value = 1
+  await loadGoods()
   ElMessage.success("搜索条件已重置")
 }
 
-// 处理搜索
-const handleSearch = () => {
-  // 实现搜索逻辑
-  filteredGoods.value = allGoods.value.filter((goods) => {
-    // 商品名称搜索
-    const nameMatch =
-      !searchForm.name || goods.name.toLowerCase().includes(searchForm.name.toLowerCase())
-
-    // 分类搜索
-    const categoryMatch = !searchForm.category_id || goods.category_id === searchForm.category_id
-
-    // 价格范围搜索
-    const minPriceMatch = !searchForm.minPrice || goods.price >= searchForm.minPrice
-    const maxPriceMatch = !searchForm.maxPrice || goods.price <= searchForm.maxPrice
-
-    return nameMatch && categoryMatch && minPriceMatch && maxPriceMatch
-  })
-
-  totalCount.value = filteredGoods.value.length
-  currentPage.value = 1 // 重置到第一页
-
-  if (filteredGoods.value.length === 0) {
+const handleSearch = async () => {
+  currentPage.value = 1
+  await loadGoods()
+  if (!totalCount.value) {
     ElMessage.info("没有找到符合条件的商品")
   } else {
-    ElMessage.success(`找到 ${filteredGoods.value.length} 个符合条件的商品`)
+    ElMessage.success(`找到 ${totalCount.value} 个符合条件的商品`)
   }
 }
 
 // 分页处理
-const handleSizeChange = (size: number) => {
+const handleSizeChange = async (size: number) => {
   pageSize.value = size
-  currentPage.value = 1 // 重置到第一页
+  currentPage.value = 1
+  await loadGoods()
 }
 
-const handleCurrentChange = (page: number) => {
+const handleCurrentChange = async (page: number) => {
   currentPage.value = page
+  await loadGoods()
 }
 
 // 新增商品
@@ -335,18 +370,13 @@ const handleDeleteGoods = (id: number) => {
     cancelButtonText: "取消",
     type: "warning"
   })
-    .then(() => {
-      // 实现删除逻辑
-      const index = allGoods.value.findIndex((item) => item.id === id)
-      if (index !== -1) {
-        allGoods.value.splice(index, 1)
-        totalCount.value--
-        // 如果当前页没有数据了，且不是第一页，返回上一页
-        if (goodsList.value.length === 0 && currentPage.value > 1) {
-          currentPage.value--
-        }
-        ElMessage.success("删除成功")
+    .then(async () => {
+      await deleteGoodsData(id)
+      ElMessage.success("删除成功")
+      if (goodsList.value.length === 1 && currentPage.value > 1) {
+        currentPage.value--
       }
+      await loadGoods()
     })
     .catch(() => {
       ElMessage.info("已取消删除")
@@ -357,42 +387,60 @@ const handleDeleteGoods = (id: number) => {
 const handleConfirm = async () => {
   if (!formRef.value) return
 
-  await formRef.value.validate((valid) => {
-    if (valid) {
+  await formRef.value.validate(async (valid) => {
+    if (!valid) return
+
+    const payload = {
+      name: goodsForm.name,
+      category_id: goodsForm.category_id as number,
+      price: goodsForm.price,
+      stock: goodsForm.stock,
+      description: goodsForm.description,
+      image: goodsForm.image
+    }
+
+    try {
       if (isEdit.value) {
-        // 编辑商品
-        const index = allGoods.value.findIndex((item) => item.id === goodsForm.id)
-        if (index !== -1) {
-          const updatedGoods = {
-            ...goodsForm,
-            category_id: goodsForm.category_id as number,
-            update_at: new Date().toISOString()
-          }
-          allGoods.value[index] = updatedGoods
-          ElMessage.success("编辑成功")
-        }
+        await updateGoodsData(goodsForm.id, payload)
+        ElMessage.success("编辑成功")
       } else {
-        // 新增商品
-        const newGoods = {
-          ...goodsForm,
-          id: allGoods.value.length + 1, // 简单生成ID
-          category_id: goodsForm.category_id as number,
-          create_at: new Date().toISOString(),
-          update_at: new Date().toISOString()
-        }
-        allGoods.value.unshift(newGoods)
-        totalCount.value++
+        await createGoodsData(payload)
         ElMessage.success("新增成功")
       }
       dialogVisible.value = false
+      await loadGoods()
+    } catch {
+      ElMessage.error(isEdit.value ? "编辑失败" : "新增失败")
     }
   })
 }
 
 // 关闭弹窗
 const handleDialogClose = () => {
-  // 这里可以添加关闭弹窗的逻辑
   dialogVisible.value = false
+}
+
+// AI 生成描述
+const { loading: aiLoading, generate: aiGenerate, error: aiError } = useAI()
+// 处理 AI 生成
+const handleAIGenerate = async () => {
+  if (!goodsForm.name.trim()) {
+    ElMessage.warning("请先填写商品名称，以便 AI 生成相关描述")
+    return
+  }
+
+  try {
+    // 使用更结构化的提示词，并可配置系统指令
+    const systemPrompt =
+      "你是一个专业的电商文案写作助手，你的任务是生成高质量、有吸引力的商品描述。"
+    const userPrompt = `请为以下商品生成一段专业、有吸引力的商品描述，适合电商后台使用。商品名称：${goodsForm.name}。描述应包含主要卖点、适用场景，长度约80-120字。`
+
+    const description = await aiGenerate(userPrompt, { systemPrompt })
+    goodsForm.description = description
+    ElMessage.success("AI 生成成功，请按需修改")
+  } catch (err) {
+    ElMessage.error(aiError.value || "生成失败，请检查登录状态或后端服务")
+  }
 }
 </script>
 

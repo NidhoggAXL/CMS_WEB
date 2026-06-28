@@ -2,11 +2,7 @@
   <div class="category-page">
     <section class="hero-panel">
       <div>
-        <p class="hero-eyebrow">Product Category</p>
         <h2 class="hero-title">商品分类管理</h2>
-        <p class="hero-description">
-          基于本地 `category-list.json` 渲染分类树，支持折叠、添加、编辑和删除。
-        </p>
       </div>
 
       <div class="hero-actions">
@@ -129,11 +125,16 @@
 </template>
 
 <script setup lang="ts" name="category">
-import { computed, nextTick, reactive, ref } from "vue"
+import { computed, nextTick, onMounted, reactive, ref } from "vue"
 import { ElMessage, ElMessageBox } from "element-plus"
 import { Plus } from "@element-plus/icons-vue"
 import type { FormInstance, FormRules } from "element-plus"
-import categoryData from "@/fixtures/product/category/category-list.json"
+import {
+  createCategoryData,
+  deleteCategoryData,
+  getCategoryListData,
+  updateCategoryData
+} from "@/servers/main/category/index"
 
 interface CategoryItem {
   id: number
@@ -154,18 +155,14 @@ interface CategoryForm {
   sort: number
 }
 
-const categories = ref<CategoryItem[]>(
-  Array.isArray(categoryData?.data?.list) ? [...categoryData.data.list] : []
-)
+const categories = ref<CategoryItem[]>([])
 
 const dialogVisible = ref(false)
 const isEdit = ref(false)
 const editingId = ref<number | null>(null)
 const formRef = ref<FormInstance>()
 const treeRenderKey = ref(0)
-const expandedKeys = ref<number[]>(
-  categories.value.filter((item) => item.parent_id === 0).map((item) => item.id)
-)
+const expandedKeys = ref<number[]>([])
 
 const formData = reactive<CategoryForm>({
   name: "",
@@ -276,6 +273,18 @@ function collectDescendantIds(targetId: number) {
   return ids
 }
 
+async function loadCategories() {
+  const result = await getCategoryListData()
+  categories.value = result.data.data.list
+  if (!expandedKeys.value.length) {
+    expandedKeys.value = categories.value.filter((item) => item.parent_id === 0).map((item) => item.id)
+  }
+}
+
+onMounted(() => {
+  loadCategories()
+})
+
 function refreshTree(expandIds?: number[]) {
   if (expandIds) {
     expandedKeys.value = [...new Set(expandIds)]
@@ -329,47 +338,32 @@ async function handleSave() {
   const valid = await formRef.value.validate().catch(() => false)
   if (!valid) return
 
-  const now = new Date().toISOString()
-
-  if (isEdit.value && editingId.value !== null) {
-    const index = categories.value.findIndex((item) => item.id === editingId.value)
-    if (index === -1) return
-
-    const current: CategoryItem = categories.value[index] as CategoryItem
-    categories.value[index] = {
-      ...current,
-      name: formData.name.trim(),
-      parent_id: formData.parent_id,
-      sort: formData.sort,
-      update_at: now
-    }
-
-    refreshTree([...expandedKeys.value, formData.parent_id, editingId.value].filter((id) => id > 0))
-    ElMessage.success("分类更新成功，页面已同步刷新")
-  } else {
-    const nextId = categories.value.length
-      ? Math.max(...categories.value.map((item) => item.id)) + 1
-      : 1
-
-    categories.value.push({
-      id: nextId,
-      name: formData.name.trim(),
-      parent_id: formData.parent_id,
-      sort: formData.sort,
-      create_at: now,
-      update_at: now
-    })
-
-    refreshTree([...expandedKeys.value, formData.parent_id].filter((id) => id > 0))
-    ElMessage.success("分类添加成功，页面已同步刷新")
+  const payload = {
+    name: formData.name.trim(),
+    parent_id: formData.parent_id,
+    sort: formData.sort
   }
 
-  dialogVisible.value = false
+  try {
+    if (isEdit.value && editingId.value !== null) {
+      await updateCategoryData(editingId.value, payload)
+      refreshTree([...expandedKeys.value, formData.parent_id, editingId.value].filter((id) => id > 0))
+      ElMessage.success("分类更新成功")
+    } else {
+      await createCategoryData(payload)
+      refreshTree([...expandedKeys.value, formData.parent_id].filter((id) => id > 0))
+      ElMessage.success("分类添加成功")
+    }
+    dialogVisible.value = false
+    await loadCategories()
+  } catch {
+    ElMessage.error(isEdit.value ? "分类更新失败" : "分类添加失败")
+  }
 }
 
 async function handleDelete(category: CategoryItem) {
   const confirmed = await ElMessageBox.confirm(
-    `确认删除分类“${category.name}”吗？该分类下的所有子分类也会一并删除。`,
+    `确认删除分类“${category.name}”吗？`,
     "删除确认",
     {
       type: "warning",
@@ -380,13 +374,17 @@ async function handleDelete(category: CategoryItem) {
 
   if (!confirmed) return
 
-  const deleteIds = collectDescendantIds(category.id)
-  if (!deleteIds.size) return
-
-  categories.value = categories.value.filter((item) => !deleteIds.has(item.id))
-  expandedKeys.value = expandedKeys.value.filter((id) => !deleteIds.has(id))
-  refreshTree(expandedKeys.value)
-  ElMessage.success("分类删除成功，页面已同步刷新")
+  try {
+    await deleteCategoryData(category.id)
+    const deleteIds = collectDescendantIds(category.id)
+    expandedKeys.value = expandedKeys.value.filter((id) => !deleteIds.has(id))
+    refreshTree(expandedKeys.value)
+    ElMessage.success("分类删除成功")
+    await loadCategories()
+  } catch (err: unknown) {
+    const message = err instanceof Error ? err.message : "分类删除失败"
+    ElMessage.error(message)
+  }
 }
 </script>
 
@@ -411,26 +409,11 @@ async function handleDelete(category: CategoryItem) {
   box-shadow: 0 20px 50px rgba(55, 84, 170, 0.08);
 }
 
-.hero-eyebrow {
-  margin: 0 0 8px;
-  color: #1768ac;
-  font-size: 12px;
-  font-weight: 700;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-}
-
 .hero-title {
   margin: 0;
   color: #102a43;
   font-size: 30px;
   line-height: 1.2;
-}
-
-.hero-description {
-  margin: 12px 0 0;
-  color: #486581;
-  font-size: 14px;
 }
 
 .hero-actions {

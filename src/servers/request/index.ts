@@ -83,6 +83,9 @@ class MYAxios {
   patch<T = any>(config: MYAxiosConfig<T>) {
     return this.request({ ...config, method: "PATCH" })
   }
+  put<T = any>(config: MYAxiosConfig<T>) {
+    return this.request({ ...config, method: "PUT" })
+  }
 
 }
 

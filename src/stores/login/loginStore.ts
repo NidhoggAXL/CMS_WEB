@@ -24,6 +24,13 @@ const useLoginStore = defineStore("login", {
       //coderwhy老师的服务器到期，所以自我模拟数据
       //帐号登录，获取token等信息
       const loginResult = await loginAcountRequest(account)
+      if ( loginResult.data.code === -1003) {
+        ElMessage.error(loginResult.data.message)
+        return
+      } else if (loginResult.data.code === -1004) {
+        ElMessage.error(loginResult.data.message)
+        return
+      }
       const token = loginResult.data.data.token
       const user = loginResult.data.data.user
       //模拟数据保存到login-store.json
