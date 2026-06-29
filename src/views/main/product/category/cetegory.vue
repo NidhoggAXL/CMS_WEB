@@ -6,7 +6,7 @@
       </div>
 
       <div class="hero-actions">
-        <el-button type="primary" @click="openCreateDialog()">
+        <el-button type="primary" v-permission="PERMISSION.PRODUCT_CATEGORY_CREATE" @click="openCreateDialog()">
           <el-icon><Plus /></el-icon>
           新增分类
         </el-button>
@@ -47,7 +47,7 @@
       </template>
 
       <el-empty v-if="!treeData.length" description="暂无分类数据">
-        <el-button type="primary" @click="openCreateDialog()">立即新增</el-button>
+        <el-button type="primary" v-permission="PERMISSION.PRODUCT_CATEGORY_CREATE" @click="openCreateDialog()">立即新增</el-button>
       </el-empty>
 
       <el-tree
@@ -73,11 +73,11 @@
             </div>
 
             <div class="tree-node__actions">
-              <el-button size="small" @click.stop="openCreateDialog(data)">新增子分类</el-button>
-              <el-button size="small" type="primary" plain @click.stop="openEditDialog(data)">
+              <el-button size="small" v-permission="PERMISSION.PRODUCT_CATEGORY_CREATE" @click.stop="openCreateDialog(data)">新增子分类</el-button>
+              <el-button size="small" type="primary" plain v-permission="PERMISSION.PRODUCT_CATEGORY_UPDATE" @click.stop="openEditDialog(data)">
                 编辑
               </el-button>
-              <el-button size="small" type="danger" plain @click.stop="handleDelete(data)">
+              <el-button size="small" type="danger" plain v-permission="PERMISSION.PRODUCT_CATEGORY_DELETE" @click.stop="handleDelete(data)">
                 删除
               </el-button>
             </div>
@@ -135,6 +135,7 @@ import {
   getCategoryListData,
   updateCategoryData
 } from "@/servers/main/category/index"
+import { PERMISSION } from "@/global/constant"
 
 interface CategoryItem {
   id: number

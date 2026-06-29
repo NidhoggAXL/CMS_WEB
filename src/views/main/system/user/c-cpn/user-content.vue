@@ -3,6 +3,7 @@ import { useSystemStore } from "@/stores/main/system/system"
 import { formatDayjs } from "@/utils/format"
 import { storeToRefs } from "pinia"
 import { ref } from "vue"
+import { PERMISSION } from "@/global/constant"
 
 //发起action，请求usersystem数据
 const systemStore = useSystemStore()
@@ -59,7 +60,7 @@ function updataUserInfoBtnClick(userInfo: any) {
   <div class="user-content">
     <div class="header">
       <span class="title">用户列表</span>
-      <el-button type="primary" @click="handleNewUserBtnClick">新建用户</el-button>
+      <el-button type="primary" v-permission="PERMISSION.SYSTEM_USER_CREATE" @click="handleNewUserBtnClick">新建用户</el-button>
     </div>
     <div class="table">
       <el-table :data="userList" border style="width: 100%" highlight-current-row>
@@ -93,6 +94,7 @@ function updataUserInfoBtnClick(userInfo: any) {
               text
               size="small"
               icon="edit"
+              v-permission="PERMISSION.SYSTEM_USER_UPDATE"
               @click="updataUserInfoBtnClick(scope.row)"
               >编辑</el-button
             >
@@ -101,6 +103,7 @@ function updataUserInfoBtnClick(userInfo: any) {
               text
               size="small"
               icon="delete"
+              v-permission="PERMISSION.SYSTEM_USER_DELETE"
               @click="handleRemoveBtnClick(scope.row.id)"
               >删除</el-button
             >

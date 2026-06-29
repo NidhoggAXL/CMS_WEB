@@ -2,7 +2,7 @@
   <div class="department">
     <div class="header">
       <span class="title">部门列表</span>
-      <el-button type="primary" @click="handleNewDepartment">新建部门</el-button>
+      <el-button type="primary" v-permission="PERMISSION.SYSTEM_DEPARTMENT_CREATE" @click="handleNewDepartment">新建部门</el-button>
     </div>
     <div class="table">
       <el-table :data="departmentList" border style="width: 100%" highlight-current-row>
@@ -27,6 +27,7 @@
               text
               size="small"
               icon="edit"
+              v-permission="PERMISSION.SYSTEM_DEPARTMENT_UPDATE"
               @click="handleEditDepartment(scope.row)"
               >编辑</el-button
             >
@@ -35,6 +36,7 @@
               text
               size="small"
               icon="delete"
+              v-permission="PERMISSION.SYSTEM_DEPARTMENT_DELETE"
               @click="handleDeleteDepartment(scope.row.id)"
               >删除</el-button
             >
@@ -83,6 +85,7 @@ import { storeToRefs } from "pinia"
 import { formatDayjs } from "@/utils/format"
 import { ElMessage, ElMessageBox } from "element-plus"
 import type { FormInstance, FormRules } from "element-plus"
+import { PERMISSION } from "@/global/constant"
 
 // 发起action，请求部门数据
 const systemStore = useSystemStore()

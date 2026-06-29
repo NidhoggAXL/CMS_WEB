@@ -2,7 +2,7 @@
   <div class="menu">
     <div class="header">
       <span class="title">菜单管理</span>
-      <el-button type="primary" @click="handleNewMenu">新建菜单</el-button>
+      <el-button type="primary" v-permission="PERMISSION.SYSTEM_MENU_CREATE" @click="handleNewMenu">新建菜单</el-button>
     </div>
     <div class="content">
       <el-tree
@@ -22,10 +22,10 @@
             <span class="node-type">({{ data.type === 1 ? "一级" : "二级" }}菜单)</span>
             <span class="node-url" v-if="data.url">{{ data.url }}</span>
             <div class="node-actions">
-              <el-button type="primary" size="small" @click.stop="handleEditMenu(data)">
+              <el-button type="primary" size="small" v-permission="PERMISSION.SYSTEM_MENU_UPDATE" @click.stop="handleEditMenu(data)">
                 编辑
               </el-button>
-              <el-button type="danger" size="small" @click.stop="handleDeleteMenu(data.id)">
+              <el-button type="danger" size="small" v-permission="PERMISSION.SYSTEM_MENU_DELETE" @click.stop="handleDeleteMenu(data.id)">
                 删除
               </el-button>
             </div>
@@ -80,6 +80,7 @@ import { storeToRefs } from "pinia"
 import { ElMessage, ElMessageBox } from "element-plus"
 import type { FormInstance, FormRules } from "element-plus"
 import type { IMenuItem } from "@/types/main/system/system"
+import { PERMISSION } from "@/global/constant"
 
 // 发起action，请求菜单数据
 const systemStore = useSystemStore()

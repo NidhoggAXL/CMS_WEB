@@ -24,3 +24,10 @@ export function getUserMuneRequest(id: number) {
     url: `login/role/${id}/menus`
   })
 }
+
+//获取角色操作权限
+export function getUserPermissionsRequest(id: number) {
+  return xlRequest.get({
+    url: `login/role/${id}/permissions`
+  })
+}

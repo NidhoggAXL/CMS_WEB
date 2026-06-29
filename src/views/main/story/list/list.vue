@@ -6,7 +6,7 @@
       </div>
       <div class="hero-actions">
         <el-statistic title="故事总数" :value="filteredStories.length" />
-        <el-button type="primary" size="large" @click="handleCreateStory">
+        <el-button type="primary" size="large" v-permission="PERMISSION.STORY_CREATE" @click="handleCreateStory">
           <el-icon><Plus /></el-icon>
           新建故事
         </el-button>
@@ -57,14 +57,14 @@
           <template #default="{ row }">
             <el-button link type="primary" @click="handleView(row)">查看</el-button>
             <el-button link type="success" @click="handleContinue(row)">继续创作</el-button>
-            <el-button link type="danger" @click="handleDelete(row)">删除</el-button>
+            <el-button link type="danger" v-permission="PERMISSION.STORY_DELETE" @click="handleDelete(row)">删除</el-button>
           </template>
         </el-table-column>
       </el-table>
 
       <div v-if="!filteredStories.length" class="empty-wrap">
         <el-empty description="还没有故事，去 AI 创作页写一篇吧">
-          <el-button type="primary" @click="handleCreateStory">开始创作</el-button>
+          <el-button type="primary" v-permission="PERMISSION.STORY_CREATE" @click="handleCreateStory">开始创作</el-button>
         </el-empty>
       </div>
 
@@ -102,6 +102,7 @@ import dayjs from "dayjs"
 import useStoryStore from "@/stores/story/storyStore"
 import type { Story } from "@/types/story/story"
 import { STORY_GENRES } from "@/types/story/story"
+import { PERMISSION } from "@/global/constant"
 
 const router = useRouter()
 const storyStore = useStoryStore()

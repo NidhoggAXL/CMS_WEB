@@ -16,6 +16,12 @@ const xlRequest = new MYAxios({
         //类型缩小
         config.headers.Authorization = "Bearer " + localCache.getItem(TOKEN)
       return config
+    },
+    responseSucess: (res) => {
+      if (res.data?.code === -2001) {
+        ElMessage.error(res.data.message || "权限不足，请联系管理员！")
+      }
+      return res
     }
   }
 })

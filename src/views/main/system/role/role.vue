@@ -2,7 +2,9 @@
   <div class="role">
     <div class="header">
       <span class="title">角色列表</span>
-      <el-button type="primary" @click="handleNewRole">新建角色</el-button>
+      <el-button type="primary" v-permission="PERMISSION.SYSTEM_ROLE_CREATE" @click="handleNewRole">
+        新建角色
+      </el-button>
     </div>
     <div class="table">
       <el-table :data="roleList" border style="width: 100%" highlight-current-row>
@@ -20,21 +22,31 @@
             {{ formatDayjs(scope.row.updateAt) }}
           </template>
         </el-table-column>
-        <el-table-column align="center" label="操作" width="150">
+        <el-table-column align="center" label="操作" width="260">
           <template #default="scope">
             <el-button
               type="primary"
               text
               size="small"
               icon="edit"
+              v-permission="PERMISSION.SYSTEM_ROLE_UPDATE"
               @click="handleEditRole(scope.row)"
               >编辑</el-button
+            >
+            <el-button
+              type="success"
+              text
+              size="small"
+              v-permission="PERMISSION.SYSTEM_ROLE_ASSIGN"
+              @click="handleAssignPermissions(scope.row)"
+              >分配权限</el-button
             >
             <el-button
               type="warning"
               text
               size="small"
               icon="delete"
+              v-permission="PERMISSION.SYSTEM_ROLE_DELETE"
               @click="handleDeleteRole(scope.row.id)"
               >删除</el-button
             >
@@ -53,8 +65,8 @@
         @current-change="handleCurrentChange"
       />
     </div>
-    <!-- 角色编辑弹窗 -->
-    <el-dialog v-model="dialogVisible" title="编辑角色" width="500px">
+
+    <el-dialog v-model="dialogVisible" :title="isEdit ? '编辑角色' : '新建角色'" width="500px">
       <el-form :model="roleForm" label-width="100px" ref="formRef" :rules="formRules">
         <el-form-item label="角色名称" prop="name">
           <el-input v-model="roleForm.name" placeholder="请输入角色名称" />
@@ -70,6 +82,33 @@
         </span>
       </template>
     </el-dialog>
+
+    <el-dialog
+      v-model="permissionDialogVisible"
+      :title="`分配权限 - ${currentRole.name || ''}`"
+      width="720px"
+    >
+      <div class="permission-groups">
+        <div v-for="group in PERMISSION_GROUPS" :key="group.label" class="permission-group">
+          <div class="permission-group__title">{{ group.label }}</div>
+          <el-checkbox-group v-model="selectedPermissionIds">
+            <el-checkbox
+              v-for="item in group.permissions"
+              :key="item.code"
+              :label="codeToIdMap[item.code]"
+            >
+              {{ item.label }}
+            </el-checkbox>
+          </el-checkbox-group>
+        </div>
+      </div>
+      <template #footer>
+        <el-button @click="permissionDialogVisible = false">取消</el-button>
+        <el-button type="primary" :loading="permissionSaving" @click="confirmAssignPermissions">
+          保存权限
+        </el-button>
+      </template>
+    </el-dialog>
   </div>
 </template>
 
@@ -79,19 +118,21 @@ import { useSystemStore } from "@/stores/main/system/system"
 import { storeToRefs } from "pinia"
 import { formatDayjs } from "@/utils/format"
 import type { FormInstance, FormRules } from "element-plus"
+import { PERMISSION, PERMISSION_GROUPS } from "@/global/constant"
+import {
+  getPermissionsListData,
+  getRolePermissionsData,
+  updateRolePermissionsData
+} from "@/servers/main/permissions"
 
-// 发起action，请求角色数据
 const systemStore = useSystemStore()
-
-// 分页数据
 const currentPage = ref(1)
 const pageSize = ref(10)
-
-// 获取角色列表和总数
 const { roleList, roleTotalCount } = storeToRefs(systemStore)
 
-// 弹窗相关
 const dialogVisible = ref(false)
+const permissionDialogVisible = ref(false)
+const permissionSaving = ref(false)
 const formRef = ref<FormInstance>()
 const isEdit = ref(false)
 const roleForm = reactive({
@@ -100,7 +141,14 @@ const roleForm = reactive({
   intro: ""
 })
 
-// 表单验证规则
+const currentRole = reactive({
+  id: 0,
+  name: ""
+})
+
+const selectedPermissionIds = ref<number[]>([])
+const codeToIdMap = reactive<Record<string, number>>({})
+
 const formRules: FormRules = {
   name: [
     { required: true, message: "请输入角色名称", trigger: "blur" },
@@ -112,18 +160,15 @@ const formRules: FormRules = {
   ]
 }
 
-// 初始化数据
 fetchRoleData()
 
-// 获取角色数据
-function fetchRoleData(queryData?: any) {
+function fetchRoleData() {
   const size = pageSize.value
   const page = currentPage.value
   const pageInfo = { size, page }
   systemStore.getRoleListAction(pageInfo)
 }
 
-// 分页器逻辑
 function handleSizeChange(size: number) {
   pageSize.value = size
   currentPage.value = 1
@@ -135,7 +180,6 @@ function handleCurrentChange(page: number) {
   fetchRoleData()
 }
 
-// 新建角色
 function handleNewRole() {
   isEdit.value = false
   Object.assign(roleForm, {
@@ -146,14 +190,45 @@ function handleNewRole() {
   dialogVisible.value = true
 }
 
-// 编辑角色
 function handleEditRole(row: any) {
   isEdit.value = true
   Object.assign(roleForm, { ...row })
   dialogVisible.value = true
 }
 
-// 删除角色
+async function ensurePermissionMap() {
+  if (Object.keys(codeToIdMap).length > 0) return
+
+  const result = await getPermissionsListData()
+  const list = result.data.data || []
+  list.forEach((item: { id: number; code: string }) => {
+    codeToIdMap[item.code] = item.id
+  })
+}
+
+async function handleAssignPermissions(row: any) {
+  currentRole.id = row.id
+  currentRole.name = row.name
+  await ensurePermissionMap()
+
+  const result = await getRolePermissionsData(row.id)
+  selectedPermissionIds.value = result.data.data?.permissionIds || []
+  permissionDialogVisible.value = true
+}
+
+async function confirmAssignPermissions() {
+  permissionSaving.value = true
+  try {
+    await updateRolePermissionsData(currentRole.id, selectedPermissionIds.value)
+    ElMessage.success("权限分配成功")
+    permissionDialogVisible.value = false
+  } catch (error) {
+    ElMessage.error("权限分配失败，请稍后重试")
+  } finally {
+    permissionSaving.value = false
+  }
+}
+
 function handleDeleteRole(id: number) {
   ElMessageBox.confirm("此操作将永久删除该角色, 是否继续?", "确认删除", {
     confirmButtonText: "确定",
@@ -163,7 +238,6 @@ function handleDeleteRole(id: number) {
     .then(async () => {
       await systemStore.deleteRoleByIdAction(id)
       ElMessage.success("删除成功")
-      // 重新获取数据
       fetchRoleData()
     })
     .catch(() => {
@@ -171,16 +245,13 @@ function handleDeleteRole(id: number) {
     })
 }
 
-// 确认保存角色
 const confirmRole = async () => {
   if (!formRef.value) return
   await formRef.value.validate((valid) => {
     if (valid) {
       if (isEdit.value) {
-        // 编辑角色
         systemStore.updateRoleAction(roleForm)
       } else {
-        // 新建角色
         systemStore.createRoleAction(roleForm)
       }
       dialogVisible.value = false
@@ -222,6 +293,28 @@ const confirmRole = async () => {
     display: flex;
     justify-content: center;
     margin: 20px 0;
+  }
+}
+
+.permission-groups {
+  max-height: 480px;
+  overflow-y: auto;
+}
+
+.permission-group {
+  margin-bottom: 18px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid #f0f0f0;
+
+  &__title {
+    margin-bottom: 10px;
+    font-weight: 600;
+    color: #303133;
+  }
+
+  :deep(.el-checkbox) {
+    margin-right: 18px;
+    margin-bottom: 8px;
   }
 }
 </style>

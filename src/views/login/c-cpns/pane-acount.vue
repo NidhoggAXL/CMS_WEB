@@ -7,11 +7,13 @@ import { reactive, ref } from "vue"
 
 const USER_NAME = "username"
 const PASSWORD = "password"
+const DEMO_ACCOUNT = "coderaxl"
+const DEMO_PASSWORD = "123456"
 
 //定义表单数据
 const acountFrom = reactive<IAcount>({
-  name: localCache.getItem(USER_NAME) ?? "",
-  password: localCache.getItem(PASSWORD) ?? ""
+  name: localCache.getItem(USER_NAME) ?? DEMO_ACCOUNT,
+  password: localCache.getItem(PASSWORD) ?? DEMO_PASSWORD
 })
 
 //定义规则
@@ -74,10 +76,14 @@ defineExpose({
   <div class="pane-acount">
     <el-form :model="acountFrom" :rules="rules" ref="formRef" label-width="60px">
       <el-form-item label="帐号" prop="name">
-        <el-input v-model="acountFrom.name" />
+        <el-input v-model="acountFrom.name" :placeholder="DEMO_ACCOUNT" />
       </el-form-item>
       <el-form-item label="密码" prop="password">
-        <el-input v-model="acountFrom.password" />
+        <el-input
+          v-model="acountFrom.password"
+          :placeholder="DEMO_PASSWORD"
+          show-password
+        />
       </el-form-item>
     </el-form>
   </div>

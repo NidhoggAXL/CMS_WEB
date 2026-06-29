@@ -3,7 +3,7 @@
     <!-- 页面头部 -->
     <div class="goods-header">
       <h2 class="page-title">商品管理</h2>
-      <el-button type="primary" size="large" @click="handleAddGoods" class="add-btn">
+      <el-button type="primary" size="large" v-permission="PERMISSION.PRODUCT_GOODS_CREATE" @click="handleAddGoods" class="add-btn">
         <el-icon><Plus /></el-icon>
         新增商品
       </el-button>
@@ -70,10 +70,10 @@
           <div class="goods-image">
             <img :src="goods.image" :alt="goods.name" />
             <div class="image-overlay">
-              <el-button size="small" type="primary" @click.stop="handleEditGoods(goods)">
+              <el-button size="small" type="primary" v-permission="PERMISSION.PRODUCT_GOODS_UPDATE" @click.stop="handleEditGoods(goods)">
                 编辑
               </el-button>
-              <el-button size="small" type="danger" @click.stop="handleDeleteGoods(goods.id)">
+              <el-button size="small" type="danger" v-permission="PERMISSION.PRODUCT_GOODS_DELETE" @click.stop="handleDeleteGoods(goods.id)">
                 删除
               </el-button>
             </div>
@@ -188,6 +188,7 @@ import {
   updateGoodsData
 } from "@/servers/main/goods/index"
 import { getCategoryListData as fetchCategories } from "@/servers/main/category/index"
+import { PERMISSION } from "@/global/constant"
 
 interface GoodsItem {
   id: number
